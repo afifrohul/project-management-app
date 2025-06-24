@@ -2,11 +2,27 @@ import React from 'react';
 import { SiteHeader } from '@/Components/site-header';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, router } from '@inertiajs/react';
-import { FaCheckCircle, FaCircle, FaPlusCircle, FaStopCircle } from 'react-icons/fa';
+import {
+  FaCheckCircle,
+  FaCircle,
+  FaPlusCircle,
+  FaStopCircle,
+} from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { format, parseISO } from 'date-fns';
 import DataTable from '@/Components/DataTable';
 import { FiLoader } from 'react-icons/fi';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Separator } from '@/Components/ui/separator';
 
 export default function Index({ tasks }) {
   return (
@@ -79,7 +95,7 @@ export default function Index({ tasks }) {
                       : 'text-green-500';
                 return (
                   <div className="flex gap-1 items-center text-xs border py-1 px-2 rounded-lg w-fit">
-                    <FaCircle className={`h-2 ${color}`}/>
+                    <FaCircle className={`h-2 ${color}`} />
                     {task.priority?.charAt(0).toUpperCase() +
                       task.priority?.slice(1)}
                   </div>
@@ -97,7 +113,81 @@ export default function Index({ tasks }) {
             },
           ]}
           renderActions={(task) => (
-            <div className='flex gap-1 justify-end'>
+            <div className="flex gap-1 justify-end">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button size="sm" variant="outline">
+                    Detail
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px] w-2/3">
+                  <DialogHeader>
+                    <DialogTitle>Detail Task</DialogTitle>
+                    <DialogDescription>
+                      Here is the detail of the task.
+                    </DialogDescription>
+                    <Separator />
+                    <div className="flex flex-col gap-3 text-muted-foreground">
+                      <div>
+                        <div className="font-semibold">Title</div>
+                        <div className='text-sm'>{task.title}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold">Description</div>
+                        <div className='text-sm'>{task.description}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold">Status</div>
+                        <div className="">
+                          {task.status === 'completed' ? (
+                            <div className="flex gap-1 items-center text-xs">
+                              <FaCheckCircle className="h-4 text-green-600" />{' '}
+                              Completed
+                            </div>
+                          ) : task.status === 'in_progress' ? (
+                            <div className="flex gap-1 items-center text-xs">
+                              <FiLoader className="h-4" /> In Progress
+                            </div>
+                          ) : (
+                            <div className="flex gap-1 items-center text-xs">
+                              <FaStopCircle className="h-4 text-yellow-500" />{' '}
+                              Not Started
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-semibold">Priority</div>
+                        <div className="flex gap-1 items-center text-xs">
+                          {task.priority === 'high' ? (
+                            <FaCircle className="h-2 text-red-500" />
+                          ) : task.priority === 'medium' ? (
+                            <FaCircle className="h-2 text-yellow-500" />
+                          ) : (
+                            <FaCircle className="h-2 text-green-500" />
+                          )}
+                          {task.priority?.charAt(0).toUpperCase() +
+                            task.priority?.slice(1)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-semibold">Due Date</div>
+                        <div className='text-sm'>
+                          {task.due_date
+                            ? format(parseISO(task.due_date), 'dd MMMM yyyy')
+                            : '-'}
+                        </div>
+                      </div>
+                    </div>
+                  </DialogHeader>
+                  <Separator />
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Close</Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
               <Button
                 size="sm"
                 variant="outline"
