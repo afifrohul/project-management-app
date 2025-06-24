@@ -23,6 +23,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Separator } from '@/Components/ui/separator';
+import EditButton from '@/Components/EditButton';
+import DeleteButton from '@/Components/DeleteButton';
 
 export default function Index({ tasks }) {
   return (
@@ -188,26 +190,8 @@ export default function Index({ tasks }) {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() =>
-                  router.get(route('personal-tasks.edit', task.id))
-                }
-              >
-                Edit
-              </Button>
-              <Button
-                size="sm"
-                variant="default"
-                onClick={() => {
-                  if (confirm('Are you sure to delete this task?')) {
-                    router.delete(route('personal-tasks.destroy', task.id));
-                  }
-                }}
-              >
-                Delete
-              </Button>
+              <EditButton routeName="personal-tasks.edit" id={task.id} />
+              <DeleteButton routeName="personal-tasks.destroy" id={task.id} />
             </div>
           )}
         />

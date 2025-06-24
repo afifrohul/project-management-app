@@ -51,7 +51,7 @@ export default function Index({ projects }) {
           renderActions={(project) => (
             <div className="flex items-center gap-1 justify-end">
               <Button
-                variant="ourlinde"
+                variant="outline"
                 onClick={() => router.get(route('projects.edit', project.id))}
               >
                 Edit

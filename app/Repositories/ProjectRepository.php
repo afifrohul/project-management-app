@@ -14,7 +14,7 @@ class ProjectRepository implements ProjectRepositoryInterface
       if (request()->has('search')) {
         $search = request('search');
         $query->where(function($q) use ($search) {
-          $q->where('title', 'like', "%{$search}%")
+          $q->where('name', 'like', "%{$search}%")
             ->orWhere('description', 'like', "%{$search}%");
         });
       }
