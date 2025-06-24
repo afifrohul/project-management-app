@@ -130,11 +130,11 @@ export default function Index({ tasks }) {
                     <div className="flex flex-col gap-3 text-muted-foreground">
                       <div>
                         <div className="font-semibold">Title</div>
-                        <div className='text-sm'>{task.title}</div>
+                        <div className="text-sm">{task.title}</div>
                       </div>
                       <div>
                         <div className="font-semibold">Description</div>
-                        <div className='text-sm'>{task.description}</div>
+                        <div className="text-sm">{task.description}</div>
                       </div>
                       <div>
                         <div className="font-semibold">Status</div>
@@ -172,7 +172,7 @@ export default function Index({ tasks }) {
                       </div>
                       <div>
                         <div className="font-semibold">Due Date</div>
-                        <div className='text-sm'>
+                        <div className="text-sm">
                           {task.due_date
                             ? format(parseISO(task.due_date), 'dd MMMM yyyy')
                             : '-'}

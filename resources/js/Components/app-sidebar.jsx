@@ -1,4 +1,4 @@
-import { LayoutDashboardIcon, UserRoundCheckIcon } from 'lucide-react';
+import { AppWindowIcon, LayoutDashboardIcon, UserRoundCheckIcon } from 'lucide-react';
 
 import {
   Sidebar,
@@ -26,9 +26,17 @@ const master = [
 
 const personal = [
   {
-    title: 'Personal Task',
+    title: 'Personal Tasks',
     url: '/personal-tasks',
     icon: UserRoundCheckIcon,
+  },
+];
+
+const collaboration = [
+  {
+    title: 'Projects',
+    url: '/projects',
+    icon: AppWindowIcon,
   },
 ];
 
@@ -80,6 +88,26 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {personal.map((item) => {
+                const isActive = currentPath.startsWith(item.url);
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild isActive={isActive}>
+                      <Link href={item.url}>
+                        <item.icon className="mr-2 h-4 w-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Collaboration Space</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {collaboration.map((item) => {
                 const isActive = currentPath.startsWith(item.url);
                 return (
                   <SidebarMenuItem key={item.title}>

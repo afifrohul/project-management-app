@@ -9,7 +9,13 @@ import {
   TableHead,
   TableCell,
 } from '@/components/ui/table';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -76,13 +82,14 @@ export default function DataTable({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 w-full">
       <div className="flex justify-between">
         <Input
           placeholder="Search..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-1/3"
+          id="search-input"
         />
         {createButton}
       </div>
@@ -91,6 +98,7 @@ export default function DataTable({
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-10">#</TableHead>
               {columns.map((col) => (
                 <TableHead
                   key={col.key}
@@ -98,30 +106,40 @@ export default function DataTable({
                   className={col.sortable ? 'cursor-pointer' : ''}
                 >
                   {col.label}
-                  {col.sortable && sortBy === col.key && (sortDir === 'asc' ? ' ↑' : ' ↓')}
+                  {col.sortable &&
+                    sortBy === col.key &&
+                    (sortDir === 'asc' ? ' ↑' : ' ↓')}
                 </TableHead>
               ))}
-              {renderActions && <TableHead className="text-right">Actions</TableHead>}
+              {renderActions && (
+                <TableHead className="text-right">Actions</TableHead>
+              )}
             </TableRow>
           </TableHeader>
+
           <TableBody>
-            {data.map((row) => (
-              <TableRow key={row.id}>
-                {columns.map((col) => (
-                  <TableCell key={col.key}>
-                    {col.render ? col.render(row) : row[col.key]}
-                  </TableCell>
-                ))}
-                {renderActions && (
-                  <TableCell className="text-right">
-                    {renderActions(row)}
-                  </TableCell>
-                )}
-              </TableRow>
-            ))}
-            {data.length === 0 && (
+            {data.length > 0 ? (
+              data.map((row, index) => (
+                <TableRow key={row.id}>
+                  <TableCell>{(meta.from || 1) + index}</TableCell>
+                  {columns.map((col) => (
+                    <TableCell key={col.key}>
+                      {col.render ? col.render(row) : row[col.key]}
+                    </TableCell>
+                  ))}
+                  {renderActions && (
+                    <TableCell className="text-right">
+                      {renderActions(row)}
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))
+            ) : (
               <TableRow>
-                <TableCell colSpan={columns.length + (renderActions ? 1 : 0)} className="text-center">
+                <TableCell
+                  colSpan={columns.length + 1 + (renderActions ? 1 : 0)}
+                  className="text-center"
+                >
                   No data found.
                 </TableCell>
               </TableRow>
@@ -132,7 +150,7 @@ export default function DataTable({
 
       <div className="flex justify-between items-center">
         <p className="text-sm">
-          Showing {meta.from || 0} to {meta.to || 0} of {meta.total || 0}
+          Showing {meta.from || 0} to {meta.to || 0} of {meta.total || 0} data
         </p>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
@@ -151,19 +169,39 @@ export default function DataTable({
             </Select>
           </div>
           <div className="flex gap-2 justify-center items-center">
-            <Button size="sm" variant="outline" disabled={meta.current_page === 1} onClick={() => goToPage(1)}>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={meta.current_page === 1}
+              onClick={() => goToPage(1)}
+            >
               <MdKeyboardDoubleArrowLeft />
             </Button>
-            <Button size="sm" variant="outline" disabled={meta.current_page === 1} onClick={() => goToPage(meta.current_page - 1)}>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={meta.current_page === 1}
+              onClick={() => goToPage(meta.current_page - 1)}
+            >
               <MdKeyboardArrowLeft />
             </Button>
             <span className="text-sm">
               {meta.current_page} / {meta.last_page}
             </span>
-            <Button size="sm" variant="outline" disabled={meta.current_page === meta.last_page} onClick={() => goToPage(meta.current_page + 1)}>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={meta.current_page === meta.last_page}
+              onClick={() => goToPage(meta.current_page + 1)}
+            >
               <MdKeyboardArrowRight />
             </Button>
-            <Button size="sm" variant="outline" disabled={meta.current_page === meta.last_page} onClick={() => goToPage(meta.last_page)}>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={meta.current_page === meta.last_page}
+              onClick={() => goToPage(meta.last_page)}
+            >
               <MdKeyboardDoubleArrowRight />
             </Button>
           </div>
@@ -172,4 +210,3 @@ export default function DataTable({
     </div>
   );
 }
-
