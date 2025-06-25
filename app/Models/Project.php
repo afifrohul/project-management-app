@@ -14,7 +14,7 @@ class Project extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['name', 'description', 'created_by'];
+    protected $fillable = ['name', 'description', 'created_by', 'status'];
 
     protected static function boot()
     {

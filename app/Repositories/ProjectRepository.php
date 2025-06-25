@@ -38,10 +38,17 @@ class ProjectRepository implements ProjectRepositoryInterface
     public function create(array $data) : Project
     {
       $project = new Project();
-      $project->title = $data['title'];
+      $project->name = $data['name'];
       $project->description = $data['description'] ?? null;
+      $project->status = $data['status'] ?? null;
       $project->created_by = $data['user_id'];
       $project->save();
+
+      $projectUserRole = new \App\Models\ProjectUserRole();
+      $projectUserRole->project_id = $project->id;
+      $projectUserRole->user_id = $data['user_id'];
+      $projectUserRole->role_id = 1; 
+      $projectUserRole->save();
 
       return $project;
     }
@@ -49,8 +56,9 @@ class ProjectRepository implements ProjectRepositoryInterface
     public function update(string $id, array $data) : bool
     {
       $project = Project::findOrFail($id);
-      $project->title = $data['title'];
+      $project->name = $data['name'];
       $project->description = $data['description'] ?? null;
+      $project->status = $data['status'] ?? null;
       return $project->save();
     }
 

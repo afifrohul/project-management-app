@@ -43,6 +43,7 @@ class ProjectController extends Controller
             $data = $request->validate([
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
+                'status' => 'required|in:pending,in_progress,completed'
             ]);
 
             $data['user_id'] = auth()->id();
@@ -105,6 +106,7 @@ class ProjectController extends Controller
             $data = $request->validate([
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
+                'status' => 'required|in:pending,in_progress,completed'
             ]);
 
             $project = $this->repository->find($id);
@@ -115,7 +117,7 @@ class ProjectController extends Controller
 
             $this->repository->update($id, $data);
 
-            return redirect()->route('projects.index')->with('success', 'Project updated successfully');
+            return redirect()->route('projects.show', $id)->with('success', 'Project updated successfully');
         } catch (\Exception $e) {
             Log::error("Error updating project $id: " . $e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Failed to update project.');
