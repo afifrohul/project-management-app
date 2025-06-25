@@ -33,6 +33,9 @@ class PersonalTaskSeeder extends Seeder
             ];
         }
 
-        PersonalTask::insert($tasks);
+
+        foreach ($tasks as $task) {
+            PersonalTask::create($task);
+        }
     }
 }

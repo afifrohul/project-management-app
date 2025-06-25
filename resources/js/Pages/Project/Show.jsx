@@ -18,7 +18,6 @@ export default function Show({ project, members, yourRole, roleNames }) {
     return groups;
   }, {});
 
-  console.log(yourRole);
   return (
     <AdminLayout siteHeader={<SiteHeader name={project.name} />}>
       <Head title={project.name} />
@@ -26,11 +25,11 @@ export default function Show({ project, members, yourRole, roleNames }) {
         <div className="bg-white p-6 rounded-lg border">
           <div className="flex gap-2">
             <h1 className="text-xl font-bold">{project.name}</h1>
-            <Badge className={'h-5'}>{yourRole.role.name}</Badge>
+            <Badge className={'h-5'}>{yourRole?.role.name}</Badge>
           </div>
           <Separator className="my-4" />
           <div className="flex gap-16">
-            <div className='w-1/3'>
+            <div className="w-1/3">
               <div className="text-gray-700 mb-2">
                 <strong>Description:</strong>{' '}
                 <div className="text-sm">
@@ -63,7 +62,7 @@ export default function Show({ project, members, yourRole, roleNames }) {
                 </div>
               </div>
             </div>
-            <div className='w-2/3'>
+            <div className="w-2/3">
               <div className="text-gray-700">
                 <strong>Team Structure:</strong>
                 <div className="text-sm flex flex-wrap gap-2 mt-1">
@@ -84,7 +83,7 @@ export default function Show({ project, members, yourRole, roleNames }) {
                                     {member.user.name}
                                   </p>
                                   <p className="text-xs">{member.role.name}</p>
-                              </div>
+                                </div>
                               ))}
                             </div>
                           </div>

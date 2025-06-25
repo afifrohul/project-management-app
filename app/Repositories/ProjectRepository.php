@@ -30,7 +30,7 @@ class ProjectRepository implements ProjectRepositoryInterface
       return $query->paginate($perPage)->withQueryString();
     }
 
-    public function find(int $id, array $with = []): ?Project
+    public function find(string $id, array $with = []): ?Project
     {
       return Project::with($with)->findOrFail($id);
     }
@@ -46,7 +46,7 @@ class ProjectRepository implements ProjectRepositoryInterface
       return $project;
     }
 
-    public function update(int $id, array $data) : bool
+    public function update(string $id, array $data) : bool
     {
       $project = Project::findOrFail($id);
       $project->title = $data['title'];
@@ -54,7 +54,7 @@ class ProjectRepository implements ProjectRepositoryInterface
       return $project->save();
     }
 
-    public function delete(int $id) : bool
+    public function delete(string $id) : bool
     {
       $project = Project::findOrFail($id);
       return $project->delete();

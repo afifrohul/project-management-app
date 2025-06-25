@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('boards', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
+            // $table->foreignId('project_id')->constrained()->cascadeOnDelete();
+            $table->ulid('project_id');
+            $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
             $table->string('name');
             $table->integer('position')->default(0);
             $table->timestamps();

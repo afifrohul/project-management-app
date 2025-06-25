@@ -8,8 +8,8 @@ use App\Models\PersonalTask;
 interface PersonalTaskRepositoryInterface
 {
   public function all(): LengthAwarePaginator;
-  public function find(int $id): ?PersonalTask;
+  public function find(string $id): ?PersonalTask;
   public function create(array $data): PersonalTask;
-  public function update(int $id, array $data): bool;
-  public function delete(int $id): bool;
+  public function update(string $id, array $data): bool;
+  public function delete(string $id): bool;
 }

@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('personal_tasks', function (Blueprint $table) {
-            $table->id();
+            // $table->id();
+            $table->ulid('id')->primary();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('title');
             $table->text('description')->nullable();

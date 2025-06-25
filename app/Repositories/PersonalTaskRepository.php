@@ -30,7 +30,7 @@ class PersonalTaskRepository implements PersonalTaskRepositoryInterface
       return $query->paginate($perPage)->withQueryString();
     }
 
-    public function find(int $id): ?PersonalTask
+    public function find(string $id): ?PersonalTask
     {
       return PersonalTask::find($id);
     }
@@ -49,7 +49,7 @@ class PersonalTaskRepository implements PersonalTaskRepositoryInterface
       return $task;
     }
 
-    public function update(int $id, array $data): bool
+    public function update(string $id, array $data): bool
     {
       $task = PersonalTask::findOrFail($id);
       $task->title = $data['title'];
@@ -60,7 +60,7 @@ class PersonalTaskRepository implements PersonalTaskRepositoryInterface
       return $task->save();
     }
 
-    public function delete(int $id): bool
+    public function delete(string $id): bool
     {
       $task = PersonalTask::findOrFail($id);
       return $task->delete();
