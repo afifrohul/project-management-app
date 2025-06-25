@@ -14,29 +14,44 @@ class ProjectSeeder extends Seeder
      */
     public function run(): void
     {
-        // Project 1 - Afif sebagai owner
-        $project1 = Project::create([
-            'name' => 'Project Alpha',
-            'description' => 'Project management pertama',
-            'created_by' => 1
-        ]);
+        $faker = \Faker\Factory::create();
 
-        // Project 2 - Rina sebagai owner
-        $project2 = Project::create([
-            'name' => 'Project Beta',
-            'description' => 'Project management kedua',
-            'created_by' => 2
-        ]);
+        $projects = [];
 
-        // Assign roles
+        for ($i = 0; $i < 5; $i++) {
+            $projects[] = [
+                'name' => $faker->sentence(2),
+                'description' => $faker->paragraph(2),
+                'created_by' => 1,
+                'status' => $faker->randomElement(['pending', 'in_progress', 'completed']),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        Project::insert($projects);
+
         ProjectUserRole::insert([
-            ['project_id' => $project1->id, 'user_id' => 1, 'role_id' => 1], // Owner
-            ['project_id' => $project1->id, 'user_id' => 2, 'role_id' => 2], // Manager
-            ['project_id' => $project1->id, 'user_id' => 3, 'role_id' => 3], // Member
-
-            ['project_id' => $project2->id, 'user_id' => 2, 'role_id' => 1], // Owner
-            ['project_id' => $project2->id, 'user_id' => 1, 'role_id' => 2], // Manager
-            ['project_id' => $project2->id, 'user_id' => 3, 'role_id' => 3], // Member
+            ['project_id' => 1, 'user_id' => 1, 'role_id' => 1], 
+            ['project_id' => 1, 'user_id' => 2, 'role_id' => 2], 
+            ['project_id' => 1, 'user_id' => 3, 'role_id' => 3], 
+            ['project_id' => 1, 'user_id' => 4, 'role_id' => 3], 
+            ['project_id' => 1, 'user_id' => 5, 'role_id' => 3], 
+            ['project_id' => 1, 'user_id' => 6, 'role_id' => 3], 
+            ['project_id' => 1, 'user_id' => 7, 'role_id' => 3], 
+            ['project_id' => 1, 'user_id' => 8, 'role_id' => 3], 
+            ['project_id' => 1, 'user_id' => 9, 'role_id' => 4], 
+            ['project_id' => 1, 'user_id' => 10, 'role_id' => 4], 
+            ['project_id' => 1, 'user_id' => 11, 'role_id' => 4], 
+            ['project_id' => 1, 'user_id' => 12, 'role_id' => 4], 
+            ['project_id' => 1, 'user_id' => 13, 'role_id' => 4], 
+            ['project_id' => 1, 'user_id' => 14, 'role_id' => 4], 
+            ['project_id' => 1, 'user_id' => 15, 'role_id' => 4], 
+            ['project_id' => 1, 'user_id' => 16, 'role_id' => 4], 
+            ['project_id' => 1, 'user_id' => 17, 'role_id' => 4], 
+            ['project_id' => 1, 'user_id' => 18, 'role_id' => 4], 
+            ['project_id' => 1, 'user_id' => 19, 'role_id' => 4], 
+            ['project_id' => 1, 'user_id' => 20, 'role_id' => 4], 
         ]);
     }
 }

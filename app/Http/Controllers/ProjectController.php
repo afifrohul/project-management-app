@@ -56,6 +56,33 @@ class ProjectController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        try {
+            $project = $this->repository->find($id);
+
+            $membersWithRoles = \App\Models\ProjectUserRole::with(['user', 'role'])
+                ->where('project_id', $project->id)
+                ->get();
+
+            $yourRole = \App\Models\ProjectUserRole::with('role')->where('user_id', auth()->id())->where('project_id', $id)->first();
+
+            if (!$project || $project->created_by !== auth()->id()) {
+                abort(403);
+            }
+
+            return Inertia::render('Project/Show', [
+                'roleNames' => \App\Models\Role::pluck('name')->toArray(),
+                'project' => $project,
+                'members' => $membersWithRoles,
+                'yourRole' => $yourRole,
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Error loading project $id: " . $e->getMessage());
+            return redirect()->route('projects.index')->with('error', 'Failed to load project details.');
+        }
+    }  
+
     public function edit($id)
     {
         try {

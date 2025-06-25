@@ -13,22 +13,28 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = \Faker\Factory::create();
+
         User::insert([
             [
-                'name' => 'Afif',
+                'name' => 'Afif Rohul',
                 'email' => 'afif@example.com',
                 'password' => \Hash::make('password')
-            ],
-            [
-                'name' => 'Rina',
-                'email' => 'rina@example.com',
-                'password' => \Hash::make('password')
-            ],
-            [
-                'name' => 'Budi',
-                'email' => 'budi@example.com',
-                'password' => \Hash::make('password')
-            ],
+            ]
         ]);
+
+        $users = [];
+
+        for ($i = 0; $i < 50; $i++) {
+            $users[] = [
+                'name' => $faker->name,
+                'email' => $faker->unique()->safeEmail,
+                'password' => \Hash::make('password'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        User::insert($users);
     }
 }

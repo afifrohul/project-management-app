@@ -30,9 +30,9 @@ class ProjectRepository implements ProjectRepositoryInterface
       return $query->paginate($perPage)->withQueryString();
     }
 
-    public function find(int $id): ?Project
+    public function find(int $id, array $with = []): ?Project
     {
-      return Project::findOrFail($id);
+      return Project::with($with)->findOrFail($id);
     }
 
     public function create(array $data) : Project

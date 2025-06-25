@@ -30,6 +30,7 @@ class Project extends Model
     public function members()
     {
         return $this->belongsToMany(User::class, 'project_user_roles')
+                    ->using(ProjectUserRole::class)
                     ->withPivot('role_id')
                     ->withTimestamps();
     }

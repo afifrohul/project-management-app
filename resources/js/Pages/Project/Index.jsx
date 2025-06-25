@@ -3,8 +3,9 @@ import { SiteHeader } from '@/Components/site-header';
 import { Button } from '@/Components/ui/button';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, router } from '@inertiajs/react';
-import { FaPlusCircle } from 'react-icons/fa';
+import { FaCheckCircle, FaPlusCircle, FaStopCircle } from 'react-icons/fa';
 import { format, parseISO } from 'date-fns';
+import { FiLoader } from 'react-icons/fi';
 
 export default function Index({ projects }) {
   return (
@@ -41,6 +42,29 @@ export default function Index({ projects }) {
                   : project.description || '-',
             },
             {
+              key: 'status',
+              label: 'Status',
+              sortable: true,
+              render: (project) => (
+                <div className="w-fit border py-1 px-2 rounded-lg">
+                  {project.status === 'completed' ? (
+                    <div className="flex gap-1 items-center text-xs">
+                      <FaCheckCircle className="h-4 text-green-600" /> Completed
+                    </div>
+                  ) : project.status === 'in_progress' ? (
+                    <div className="flex gap-1 items-center text-xs">
+                      <FiLoader className="h-4" /> In Progress
+                    </div>
+                  ) : (
+                    <div className="flex gap-1 items-center text-xs">
+                      <FaStopCircle className="h-4 text-yellow-500" /> Not
+                      Started
+                    </div>
+                  )}
+                </div>
+              ),
+            },
+            {
               key: 'created_at',
               label: 'Created At',
               sortable: true,
@@ -51,23 +75,10 @@ export default function Index({ projects }) {
           renderActions={(project) => (
             <div className="flex items-center gap-1 justify-end">
               <Button
-                variant="outline"
-                onClick={() => router.get(route('projects.edit', project.id))}
-              >
-                Edit
-              </Button>
-              <Button
-                size="sm"
                 variant="default"
-                onClick={() => {
-                  if (confirm('Are you sure to delete this project?')) {
-                    router.delete(
-                      route('projects.destroy', project.id)
-                    );
-                  }
-                }}
+                onClick={() => router.get(route('projects.show', project.id))}
               >
-                Delete
+                View
               </Button>
             </div>
           )}
