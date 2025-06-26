@@ -20,6 +20,7 @@ return new class extends Migration
             // $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('role_id')->constrained()->cascadeOnDelete();
+            $table->enum('status', ['pending', 'decline', 'accepted'])->default('pending');
             $table->timestamps();
 
             $table->unique(['project_id', 'user_id']); // unique per project

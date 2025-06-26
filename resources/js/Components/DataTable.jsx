@@ -28,11 +28,13 @@ import {
 export default function DataTable({
   columns = [],
   data = [],
-  meta = {},
-  routeName,
+  meta = null,
+  routeName = null,
   defaultSortBy = 'created_at',
   defaultSortDir = 'desc',
   renderActions,
+  inputSearch = false,
+  pagination = false,
   createButton = null,
 }) {
   const [search, setSearch] = useState(
@@ -59,6 +61,7 @@ export default function DataTable({
   });
 
   useEffect(() => {
+    if (!routeName || !pagination) return;
     router.get(route(routeName), buildQuery({ page: 1 }), {
       preserveState: true,
       replace: true,
@@ -75,22 +78,27 @@ export default function DataTable({
   };
 
   const goToPage = (page) => {
+    if (!routeName) return;
     router.get(route(routeName), buildQuery({ page }), {
       preserveState: true,
       replace: true,
     });
   };
 
+  const startingNumber = meta?.from ?? 1;
+
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="flex justify-between">
-        <Input
-          placeholder="Search..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-1/3"
-          id="search-input"
-        />
+      <div className="flex justify-between items-center">
+        {inputSearch && (
+          <Input
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-1/3"
+            id="search-input"
+          />
+        )}
         {createButton}
       </div>
 
@@ -121,7 +129,7 @@ export default function DataTable({
             {data.length > 0 ? (
               data.map((row, index) => (
                 <TableRow key={row.id}>
-                  <TableCell>{(meta.from || 1) + index}</TableCell>
+                  <TableCell>{startingNumber + index}</TableCell>
                   {columns.map((col) => (
                     <TableCell key={col.key}>
                       {col.render ? col.render(row) : row[col.key]}
@@ -148,65 +156,67 @@ export default function DataTable({
         </Table>
       </div>
 
-      <div className="flex justify-between items-center">
-        <p className="text-sm">
-          Showing {meta.from || 0} to {meta.to || 0} of {meta.total || 0} data
-        </p>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <p className="text-sm">Rows per page</p>
-            <Select value={perPage} onValueChange={setPerPage}>
-              <SelectTrigger className="w-16">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {[10, 25, 50].map((num) => (
-                  <SelectItem key={num} value={String(num)}>
-                    {num}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex gap-2 justify-center items-center">
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={meta.current_page === 1}
-              onClick={() => goToPage(1)}
-            >
-              <MdKeyboardDoubleArrowLeft />
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={meta.current_page === 1}
-              onClick={() => goToPage(meta.current_page - 1)}
-            >
-              <MdKeyboardArrowLeft />
-            </Button>
-            <span className="text-sm">
-              {meta.current_page} / {meta.last_page}
-            </span>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={meta.current_page === meta.last_page}
-              onClick={() => goToPage(meta.current_page + 1)}
-            >
-              <MdKeyboardArrowRight />
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={meta.current_page === meta.last_page}
-              onClick={() => goToPage(meta.last_page)}
-            >
-              <MdKeyboardDoubleArrowRight />
-            </Button>
+      {pagination && meta && (
+        <div className="flex justify-between items-center">
+          <p className="text-sm">
+            Showing {meta.from || 0} to {meta.to || 0} of {meta.total || 0} data
+          </p>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <p className="text-sm">Rows per page</p>
+              <Select value={perPage} onValueChange={setPerPage}>
+                <SelectTrigger className="w-16">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[10, 25, 50].map((num) => (
+                    <SelectItem key={num} value={String(num)}>
+                      {num}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex gap-2 justify-center items-center">
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={meta.current_page === 1}
+                onClick={() => goToPage(1)}
+              >
+                <MdKeyboardDoubleArrowLeft />
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={meta.current_page === 1}
+                onClick={() => goToPage(meta.current_page - 1)}
+              >
+                <MdKeyboardArrowLeft />
+              </Button>
+              <span className="text-sm">
+                {meta.current_page} / {meta.last_page}
+              </span>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={meta.current_page === meta.last_page}
+                onClick={() => goToPage(meta.current_page + 1)}
+              >
+                <MdKeyboardArrowRight />
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={meta.current_page === meta.last_page}
+                onClick={() => goToPage(meta.last_page)}
+              >
+                <MdKeyboardDoubleArrowRight />
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

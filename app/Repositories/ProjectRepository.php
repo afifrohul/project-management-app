@@ -48,6 +48,7 @@ class ProjectRepository implements ProjectRepositoryInterface
       $projectUserRole->project_id = $project->id;
       $projectUserRole->user_id = $data['user_id'];
       $projectUserRole->role_id = 1; 
+      $projectUserRole->status = 'accepted'; 
       $projectUserRole->save();
 
       return $project;

@@ -20,8 +20,6 @@ export default function Edit({ project }) {
     status: project.status || 'pending',
   });
 
-  console.log(form);
-
   const handleChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
@@ -34,61 +32,63 @@ export default function Edit({ project }) {
   return (
     <AdminLayout siteHeader={<SiteHeader name="Edit Project" />}>
       <Head title="Edit Project" />
-      <div className="container max-w-xl">
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4 border p-6 rounded-lg"
-        >
-          <div>
-            <label className="block mb-1 text-sm font-medium">Name</label>
-            <Input
-              value={form.name}
-              onChange={(e) => handleChange('name', e.target.value)}
-              placeholder="Enter project name"
-              required
-            />
-          </div>
+      <div className="container max-w-xl flex flex-col gap-4">
+        <div>
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4 border p-6 rounded-lg"
+          >
+            <div>
+              <label className="block mb-1 text-sm font-medium">Name</label>
+              <Input
+                value={form.name}
+                onChange={(e) => handleChange('name', e.target.value)}
+                placeholder="Enter project name"
+                required
+              />
+            </div>
 
-          <div>
-            <label className="block mb-1 text-sm font-medium">
-              Description
-            </label>
-            <Textarea
-              value={form.description}
-              onChange={(e) => handleChange('description', e.target.value)}
-              placeholder="Enter project description"
-              rows={4}
-            />
-          </div>
+            <div>
+              <label className="block mb-1 text-sm font-medium">
+                Description
+              </label>
+              <Textarea
+                value={form.description}
+                onChange={(e) => handleChange('description', e.target.value)}
+                placeholder="Enter project description"
+                rows={4}
+              />
+            </div>
 
-          <div>
-            <label className="block mb-1 text-sm font-medium">Status</label>
-            <Select
-              value={form.status}
-              onValueChange={(value) => handleChange('status', value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pending">Not Started</SelectItem>
-                <SelectItem value="in_progress">In Progress</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            <div>
+              <label className="block mb-1 text-sm font-medium">Status</label>
+              <Select
+                value={form.status}
+                onValueChange={(value) => handleChange('status', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pending">Not Started</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.get(route('projects.show', project.id))}
-            >
-              Cancel
-            </Button>
-            <Button type="submit">Update Project</Button>
-          </div>
-        </form>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.get(route('projects.show', project.id))}
+              >
+                Cancel
+              </Button>
+              <Button type="submit">Update Project</Button>
+            </div>
+          </form>
+        </div>
       </div>
     </AdminLayout>
   );

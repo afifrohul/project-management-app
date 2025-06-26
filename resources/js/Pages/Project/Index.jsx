@@ -18,6 +18,8 @@ export default function Index({ projects }) {
           meta={projects}
           defaultSortBy="created_at"
           defaultSortDir="desc"
+          inputSearch
+          pagination
           createButton={
             <Button
               variant="outline"

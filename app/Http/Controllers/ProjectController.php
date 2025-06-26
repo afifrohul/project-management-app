@@ -82,7 +82,8 @@ class ProjectController extends Controller
             Log::error("Error loading project $id: " . $e->getMessage());
             return redirect()->route('projects.index')->with('error', 'Failed to load project details.');
         }
-    }  
+    }
+
 
     public function edit($id)
     {
@@ -90,10 +91,12 @@ class ProjectController extends Controller
             $project = $this->repository->find($id);
 
             if (!$project || $project->created_by !== auth()->id()) {
-            abort(403);
+                abort(403);
             }
 
-            return Inertia::render('Project/Edit', compact('project'));
+            return Inertia::render('Project/Edit', [
+                'project' => $project,
+            ]);
         } catch (\Exception $e) {
             Log::error("Error loading edit form for project $id: " . $e->getMessage());
             return redirect()->route('projects.index')->with('error', 'Failed to open edit form.');
@@ -142,4 +145,79 @@ class ProjectController extends Controller
             return redirect()->route('projects.index')->with('error', 'Failed to delete project.');
         }
     }
+
+    public function team($id)
+    {
+        try {
+            $project = $this->repository->find($id);
+
+            $membersWithRoles = \App\Models\ProjectUserRole::with(['user', 'role'])
+                ->where('project_id', $project->id)
+                ->where('status', 'accepted')
+                ->get();
+                
+            $membersWithRolesPending = \App\Models\ProjectUserRole::with(['user', 'role'])
+                ->where('project_id', $project->id)
+                ->where('status', 'pending')
+                ->get();
+
+            $assignedUserIds = $membersWithRoles->pluck('user_id')->toArray();
+
+            $availableUsers = \App\Models\User::whereNotIn('id', $assignedUserIds)
+                ->select('id', 'name', 'email')
+                ->get();
+
+            $roles = \App\Models\Role::get();
+
+            return Inertia::render('Project/Team', [
+                'project_id' => $project->id,
+                'members' => $membersWithRoles,
+                'membersPending' => $membersWithRolesPending,
+                'availableUsers' => $availableUsers,
+                'roles'=> $roles
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Error loading manage team form for project $id: " . $e->getMessage());
+            return redirect()->route('projects.index')->with('error', 'Failed to open manage team form.');
+        }
+    }
+
+    public function addTeam(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'user_id' => 'required',
+                'role_id' => 'required',
+                'project_id' => 'required',
+            ]);
+
+            $projectUserRole = new \App\Models\ProjectUserRole();
+            $projectUserRole->project_id = $data['project_id'];
+            $projectUserRole->user_id = $data['user_id'];
+            $projectUserRole->role_id = $data['role_id']; 
+            $projectUserRole->status = 'pending'; 
+            $projectUserRole->save();
+
+            return redirect()->route('projects.team', $data['project_id'] )->with('success', 'Add user successfully');
+        } catch (\Exception $e) {
+            Log::error('Error add user: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to add user.');
+        }
+    }
+
+    public function deleteTeam($id)
+    {
+        try {
+            $team = \App\Models\ProjectUserRole::findOrFail($id);
+            $projectId = $team->project_id;
+
+            $team->delete();
+
+            return redirect()->route('projects.team', $projectId)->with('success', 'Member removed!');
+        } catch (\Exception $e) {
+            Log::error("Error removing member $id: " . $e->getMessage());
+            return redirect()->route('projects.team', $projectId ?? null)->with('error', 'Failed to remove member.');
+        }
+    }
+
 }

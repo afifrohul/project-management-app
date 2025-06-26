@@ -42,6 +42,7 @@ class ProjectSeeder extends Seeder
                 'project_id' => $project->id,
                 'user_id' => 1,
                 'role_id' => 1,
+                'status' => 'accepted',
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -54,6 +55,7 @@ class ProjectSeeder extends Seeder
                 'project_id' => $project->id,
                 'user_id' => $coreUsers[0],
                 'role_id' => 2,
+                'status' => 'accepted',
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -61,6 +63,7 @@ class ProjectSeeder extends Seeder
                 'project_id' => $project->id,
                 'user_id' => $coreUsers[1],
                 'role_id' => 3,
+                'status' => 'accepted',
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -74,6 +77,7 @@ class ProjectSeeder extends Seeder
                     'project_id' => $project->id,
                     'user_id' => $userId,
                     'role_id' => 4,
+                    'status' => 'accepted',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];

@@ -3,9 +3,10 @@ import DeleteButton from '@/Components/DeleteButton';
 import EditButton from '@/Components/EditButton';
 import { SiteHeader } from '@/Components/site-header';
 import { Badge } from '@/Components/ui/badge';
+import { Button } from '@/Components/ui/button';
 import { Separator } from '@/Components/ui/separator';
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { FaCheckCircle, FaStopCircle } from 'react-icons/fa';
 import { FiLoader } from 'react-icons/fi';
@@ -25,16 +26,22 @@ export default function Show({ project, members, yourRole, roleNames }) {
       <Head title={project.name} />
       <div className="w-full mx-auto flex flex-col gap-4">
         <div className="bg-white p-6 rounded-lg border">
-          <div className='flex justify-between'>
+          <div className="flex justify-between">
             <div className="flex gap-2">
               <h1 className="text-xl font-bold">{project.name}</h1>
               <Badge className={'h-5'}>{yourRole?.role.name}</Badge>
             </div>
-            <div className='flex gap-2'>
-              <EditButton routeName="projects.edit" id={project.id}/>
-              <DeleteButton routeName="projects.destroy" id={project.id}/>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.get(route('projects.team', project.id))}
+              >
+                Managa Team
+              </Button>
+              <EditButton routeName="projects.edit" id={project.id} />
+              <DeleteButton routeName="projects.destroy" id={project.id} />
             </div>
-
           </div>
           <Separator className="my-4" />
           <div className="flex gap-16">
