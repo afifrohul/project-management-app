@@ -120,7 +120,7 @@ export default function DataTable({
                 </TableHead>
               ))}
               {renderActions && (
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="">Actions</TableHead>
               )}
             </TableRow>
           </TableHeader>
@@ -136,7 +136,7 @@ export default function DataTable({
                     </TableCell>
                   ))}
                   {renderActions && (
-                    <TableCell className="text-right">
+                    <TableCell className="">
                       {renderActions(row)}
                     </TableCell>
                   )}

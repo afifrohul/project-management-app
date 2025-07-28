@@ -75,8 +75,9 @@ export default function Index({ projects }) {
             },
           ]}
           renderActions={(project) => (
-            <div className="flex items-center gap-1 justify-end">
+            <div className="flex items-center gap-1">
               <Button
+                size="sm"
                 variant="default"
                 onClick={() => router.get(route('projects.show', project.id))}
               >

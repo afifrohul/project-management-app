@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/dialog';
 import { Separator } from '@/Components/ui/separator';
 import EditButton from '@/Components/EditButton';
-import DeleteButton from '@/Components/DeleteButton';
+import ConfirmButton from '@/Components/ConfirmButton';
 
 export default function Index({ tasks }) {
   return (
@@ -59,8 +59,8 @@ export default function Index({ tasks }) {
               label: 'Description',
               sortable: true,
               render: (task) =>
-                task.description?.length > 50
-                  ? task.description.substring(0, 50) + '...'
+                task.description?.length > 30
+                  ? task.description.substring(0, 30) + '...'
                   : task.description || '-',
             },
             {
@@ -117,7 +117,7 @@ export default function Index({ tasks }) {
             },
           ]}
           renderActions={(task) => (
-            <div className="flex gap-1 justify-end">
+            <div className="flex gap-1">
               <Dialog>
                 <DialogTrigger asChild>
                   <Button size="sm" variant="outline">
@@ -193,7 +193,7 @@ export default function Index({ tasks }) {
                 </DialogContent>
               </Dialog>
               <EditButton routeName="personal-tasks.edit" id={task.id} />
-              <DeleteButton routeName="personal-tasks.destroy" id={task.id} />
+              <ConfirmButton routeName="personal-tasks.destroy" id={task.id} />
             </div>
           )}
         />

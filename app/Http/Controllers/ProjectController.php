@@ -6,6 +6,7 @@ use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use App\Models\ProjectUserRole;
 
 class ProjectController extends Controller
 {
@@ -217,6 +218,82 @@ class ProjectController extends Controller
         } catch (\Exception $e) {
             Log::error("Error removing member $id: " . $e->getMessage());
             return redirect()->route('projects.team', $projectId ?? null)->with('error', 'Failed to remove member.');
+        }
+    }
+
+    public function invitations(Request $request)
+    {
+        try {
+            $search = $request->input('search');
+            $perPage = $request->input('per_page', 10);
+            $sortBy = $request->input('sort_by', 'created_at');
+            $sortDir = $request->input('sort_dir', 'desc');
+
+            $query = ProjectUserRole::query()
+                ->select('project_user_roles.*')
+                ->join('projects', 'projects.id', '=', 'project_user_roles.project_id')
+                ->join('roles', 'roles.id', '=', 'project_user_roles.role_id')
+                ->join('users', 'users.id', '=', 'project_user_roles.user_id')
+                ->with(['project', 'role', 'user'])
+                ->where('project_user_roles.user_id', auth()->id());
+
+            // Pencarian (search)
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('projects.name', 'like', "%{$search}%")
+                    ->orWhere('roles.name', 'like', "%{$search}%");
+                });
+            }
+
+            $sortableFields = [
+                'project.name' => 'projects.name',
+                'role.name' => 'roles.name',
+                'user.name' => 'users.name',
+                'created_at' => 'project_user_roles.created_at',
+            ];
+
+            $sortColumn = $sortableFields[$sortBy] ?? 'project_user_roles.created_at';
+
+            $invitations = $query
+                ->orderBy($sortColumn, $sortDir)
+                ->paginate($perPage)
+                ->withQueryString();
+
+            return Inertia::render('Project/Invitations', [
+                'invitations' => $invitations,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error loading invitations: ' . $e->getMessage());
+            return redirect()->route('projects.index')->with('error', 'Failed to load invitations.');
+        }
+    }
+
+
+    public function acceptInvitation($id)
+    {
+        try {
+            $team = \App\Models\ProjectUserRole::findOrFail($id);
+            $team->status = 'accepted';
+            $team->save();
+
+            return redirect()->route('invitations.index', $team->project_id)->with('success', 'Member accepted!');
+        } catch (\Exception $e) {
+            Log::error("Error accepting member $id: " . $e->getMessage());
+            return redirect()->route('invitations.index', $team->project_id ?? null)->with('error', 'Failed to accept member.');
+        }
+    }
+
+    public function rejectInvitation($id)
+    {
+        try {
+            $team = \App\Models\ProjectUserRole::findOrFail($id);
+            $team->status = 'decline';
+            $team->save();
+
+            return redirect()->route('invitations.index', $team->project_id)->with('success', 'Member rejected!');
+        } catch (\Exception $e) {
+            Log::error("Error rejecting member $id: " . $e->getMessage());
+            return redirect()->route('invitations.index', $team->project_id ?? null)->with('error', 'Failed to reject member.');
         }
     }
 

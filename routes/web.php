@@ -43,6 +43,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/projects/{id}/team', [ProjectController::class, 'team'])->name('projects.team');
     Route::post('/projects', [ProjectController::class, 'addTeam'])->name('projects.add-team');
     Route::delete('/projects/{id}', [ProjectController::class, 'deleteTeam'])->name('projects.delete-team');
+
+    Route::get('/invitations', [ProjectController::class, 'invitations'])->name('invitations.index');
+    Route::put('/invitations/{id}/accept', [ProjectController::class, 'acceptInvitation'])->name('invitations.accept');
+    Route::put('/invitations/{id}/reject', [ProjectController::class, 'rejectInvitation'])->name('invitations.reject');
 });
 
 require __DIR__.'/auth.php';

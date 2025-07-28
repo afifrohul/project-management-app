@@ -1,4 +1,4 @@
-import { AppWindowIcon, LayoutDashboardIcon, UserRoundCheckIcon } from 'lucide-react';
+import { AppWindowIcon, LayoutDashboardIcon, MailsIcon, UserRoundCheckIcon } from 'lucide-react';
 
 import {
   Sidebar,
@@ -33,6 +33,11 @@ const personal = [
 ];
 
 const collaboration = [
+  {
+    title: 'Invitations',
+    url: '/invitations',
+    icon: MailsIcon,
+  },
   {
     title: 'Projects',
     url: '/projects',

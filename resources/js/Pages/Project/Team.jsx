@@ -12,7 +12,8 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { SiteHeader } from '@/Components/site-header';
 import DataTable from '@/Components/DataTable';
 import AvatarInitials from '@/Components/AvatarInitials';
-import DeleteButton from '@/Components/DeleteButton';
+import ConfirmButton from '@/Components/ConfirmButton';
+import { format, parseISO } from 'date-fns';
 
 export default function Team({
   project_id,
@@ -67,8 +68,7 @@ export default function Team({
                         <div className="flex gap-2 items-center">
                           {/* <AvatarInitials className="inline" name={user.name} /> */}
                           <p className="text-sm">
-                            <strong>{user.name}</strong>
-                            {/* ({user.email}) */}
+                            <strong>{user.name} </strong>({user.email})
                           </p>
                         </div>
                       </SelectItem>
@@ -108,6 +108,12 @@ export default function Team({
                 render: (row) => row.user?.name,
               },
               {
+                key: 'email',
+                label: 'Email',
+                sortable: false,
+                render: (row) => row.user?.email,
+              },
+              {
                 key: 'role',
                 label: 'Role',
                 sortable: false,
@@ -118,10 +124,17 @@ export default function Team({
                 label: 'Status',
                 sortable: false,
               },
+              {
+                key: 'updated_at',
+                label: 'Invitation Date',
+                sortable: true,
+                render: (row) =>
+                  format(parseISO(row.updated_at), 'dd MMM yyyy - HH:mm'),
+              },
             ]}
             renderActions={(membersPending) => (
-              <div className="flex items-center gap-1 justify-end">
-                <DeleteButton
+              <div className="flex items-center gap-1">
+                <ConfirmButton
                   label="Remove"
                   confirmMessage="Are you sure to cancel this invitation user?"
                   routeName="projects.delete-team"
@@ -145,6 +158,12 @@ export default function Team({
                 render: (row) => row.user?.name,
               },
               {
+                key: 'email',
+                label: 'Email',
+                sortable: false,
+                render: (row) => row.user?.email,
+              },
+              {
                 key: 'role',
                 label: 'Role',
                 sortable: false,
@@ -155,10 +174,17 @@ export default function Team({
                 label: 'Status',
                 sortable: false,
               },
+              {
+                key: 'updated_at',
+                label: 'Accepted Date',
+                sortable: true,
+                render: (row) =>
+                  format(parseISO(row.updated_at), 'dd MMM yyyy - HH:mm'),
+              },
             ]}
             renderActions={(members) => (
-              <div className="flex items-center gap-1 justify-end">
-                <DeleteButton
+              <div className="flex items-center gap-1">
+                <ConfirmButton
                   routeName="projects.delete-team"
                   id={members.id}
                 />

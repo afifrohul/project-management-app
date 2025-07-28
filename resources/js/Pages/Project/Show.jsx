@@ -1,5 +1,5 @@
 import AvatarInitials from '@/Components/AvatarInitials';
-import DeleteButton from '@/Components/DeleteButton';
+import ConfirmButton from '@/Components/ConfirmButton';
 import EditButton from '@/Components/EditButton';
 import { SiteHeader } from '@/Components/site-header';
 import { Badge } from '@/Components/ui/badge';
@@ -25,7 +25,7 @@ export default function Show({ project, members, yourRole, roleNames }) {
     <AdminLayout siteHeader={<SiteHeader name={project.name} />}>
       <Head title={project.name} />
       <div className="w-full mx-auto flex flex-col gap-4">
-        <div className="bg-white p-6 rounded-lg border">
+        <div className="p-6 rounded-lg border">
           <div className="flex justify-between">
             <div className="flex gap-2">
               <h1 className="text-xl font-bold">{project.name}</h1>
@@ -40,7 +40,7 @@ export default function Show({ project, members, yourRole, roleNames }) {
                 Managa Team
               </Button>
               <EditButton routeName="projects.edit" id={project.id} />
-              <DeleteButton routeName="projects.destroy" id={project.id} />
+              <ConfirmButton routeName="projects.destroy" id={project.id} />
             </div>
           </div>
           <Separator className="my-4" />

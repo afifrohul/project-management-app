@@ -4,30 +4,39 @@ namespace App\Repositories;
 
 use App\Models\Project;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
-    public function all() : \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function all(): LengthAwarePaginator
     {
-      $query = Project::where('created_by', auth()->id());
+        $userId = auth()->id();
 
-      if (request()->has('search')) {
-        $search = request('search');
-        $query->where(function($q) use ($search) {
-          $q->where('name', 'like', "%{$search}%")
-            ->orWhere('description', 'like', "%{$search}%");
+        $query = Project::whereHas('projectUserRoles', function ($q) use ($userId) {
+            $q->where('user_id', $userId)
+              ->where('status', 'accepted');
         });
-      }
 
-      if (request()->has('sort_by') && request()->has('sort_dir')) {
-        $query->orderBy(request('sort_by'), request('sort_dir'));
-      } else {
-        $query->latest();
-      }
+        // Pencarian
+        if (request()->filled('search')) {
+            $search = request('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
 
-      $perPage = request('per_page', 10);
+        // Sorting
+        if (request()->has(['sort_by', 'sort_dir'])) {
+            $query->orderBy(request('sort_by'), request('sort_dir'));
+        } else {
+            $query->latest();
+        }
 
-      return $query->paginate($perPage)->withQueryString();
+        // Pagination
+        $perPage = request('per_page', 10);
+
+        return $query->paginate($perPage)->withQueryString();
     }
 
     public function find(string $id, array $with = []): ?Project
