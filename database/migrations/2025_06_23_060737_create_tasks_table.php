@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            // $table->ulid('id')->primary();
-            // $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->ulid('project_id');
             $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
             $table->foreignId('board_id')->constrained()->cascadeOnDelete();
@@ -22,7 +20,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->date('due_date')->nullable();
             $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
-            $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
             $table->timestamps();
             $table->softDeletes(); // soft delete task
         });

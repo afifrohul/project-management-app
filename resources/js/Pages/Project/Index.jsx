@@ -11,7 +11,7 @@ export default function Index({ projects }) {
   return (
     <AdminLayout siteHeader={<SiteHeader name="Projects" />}>
       <Head title="Projects" />
-      <div className="w-full mx-auto flex flex col gap-4">
+      <div className="w-full mx-auto flex flex-col gap-4">
         <DataTable
           routeName="projects.index"
           data={projects.data}

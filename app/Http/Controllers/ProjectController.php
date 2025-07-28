@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use App\Models\ProjectUserRole;
 use App\Models\Board;
+use App\Models\Project;
 
 class ProjectController extends Controller
 {
@@ -353,6 +354,26 @@ class ProjectController extends Controller
             \Log::error("Error deleting board $boardId from project $id: " . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to delete board.');
         }
+    }
+
+    public function getKanbanData($id)
+    {
+        $project = Project::with('boards.tasks')->findOrFail($id);
+
+        // Ambil semua boards terkait project
+        $boards = $project->boards()->orderBy('created_at')->get();
+
+        // Ambil semua tasks terkait project + board_id-nya
+        $tasks = $project->tasks()->get();
+
+        return Inertia::render('Project/Kanban', [
+            'project' => [
+                'id' => $project->id,
+                'name' => $project->name,
+            ],
+            'boards' => $boards,
+            'tasks' => $tasks,
+        ]);
     }
 
 

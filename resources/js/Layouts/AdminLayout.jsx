@@ -9,7 +9,7 @@ export default function AdminLayout({ children, siteHeader }) {
     <SidebarProvider>
       <Toaster richColors position="top-center" />
       <AppSidebar />
-      <main className="w-full h-full">
+      <main className="max-w-full w-full h-full">
         {siteHeader ?? <SiteHeader />}
         <div className="p-4 min-h-screen">
           <FlashToast />

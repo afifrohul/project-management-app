@@ -24,6 +24,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
+import { LuSquareArrowOutUpRight } from 'react-icons/lu';
 
 export default function Show({ project, members, yourRole, roleNames }) {
   const groupedMembers = members.reduce((groups, member) => {
@@ -159,8 +160,15 @@ export default function Show({ project, members, yourRole, roleNames }) {
         </div>
         <div className="p-6 rounded-lg border">
           <div className="flex justify-between">
-            <div className="flex gap-2">
+            <div className="flex gap-2 justify-between items-center w-full">
               <h1 className="font-bold">Project Board</h1>
+              <a href={route('projects.kanban', project.id)} target="_blank">
+                <Button
+                  variant="outline"
+                >
+                  Open Kanban Board <LuSquareArrowOutUpRight />
+                </Button>
+              </a>
             </div>
           </div>
           <Separator className="my-4" />

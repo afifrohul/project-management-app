@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Task;
 use App\Models\Board;
+use Faker\Factory as Faker;
+use Carbon\Carbon;
 
 class TaskSeeder extends Seeder
 {
@@ -14,20 +15,26 @@ class TaskSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = Faker::create();
         $boards = Board::all();
 
         foreach ($boards as $board) {
-            $task = Task::create([
-                'project_id' => $board->project_id,
-                'board_id' => $board->id,
-                'title' => 'Task for ' . $board->name,
-                'description' => 'Dummy task description',
-                'priority' => 'medium',
-                'status' => 'pending',
-            ]);
+            // Buat antara 3-7 task per board
+            $taskCount = rand(3, 7);
 
-            // Assign to member user_id = 3
-            $task->assignedUsers()->attach(3);
+            for ($i = 0; $i < $taskCount; $i++) {
+                $task = Task::create([
+                    'project_id'  => $board->project_id,
+                    'board_id'    => $board->id,
+                    'title'       => $faker->sentence(3),
+                    'description' => $faker->paragraph(),
+                    'priority'    => $faker->randomElement(['low', 'medium', 'high']),
+                    'due_date'    => Carbon::now()->addDays(5),
+                ]);
+
+                // Optional: assign user_id acak (misal 3–5)
+                // $task->assignments()->attach(rand(3, 5));
+            }
         }
     }
 }

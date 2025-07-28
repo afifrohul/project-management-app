@@ -12,7 +12,7 @@ class Task extends Model
 
     protected $fillable = [
         'project_id', 'board_id', 'title', 'description', 
-        'due_date', 'priority', 'status'
+        'due_date', 'priority',
     ];
 
     public function project()
@@ -25,9 +25,8 @@ class Task extends Model
         return $this->belongsTo(Board::class);
     }
 
-    public function assignedUsers()
+    public function assignments()
     {
-        return $this->belongsToMany(User::class, 'task_assignments')
-                    ->withTimestamps();
+        return $this->belongsToMany(User::class, 'task_assignments');
     }
 }

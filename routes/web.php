@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('project.role:Owner,Leader,Manager,Member')->group(function () {
         Route::get('/projects/{id}/show', [ProjectController::class, 'show'])->name('projects.show');
         Route::delete('/projects/team/{id}/leave', [ProjectController::class, 'leaveProject'])->name('projects.leave');
+        Route::get('/projects/{id}/kanban', [ProjectController::class, 'getKanbanData'])->name('projects.kanban');
     });
 
     Route::get('/invitations', [ProjectController::class, 'invitations'])->name('invitations.index');

@@ -49,7 +49,7 @@ export function AppSidebar() {
   const currentPath = new URL(location.href).pathname;
   const user = usePage().props.auth.user;
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="offcanvas">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

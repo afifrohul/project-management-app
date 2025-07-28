@@ -18,9 +18,13 @@ class BoardSeeder extends Seeder
 
         foreach ($projects as $project) {
             Board::insert([
-                ['project_id' => $project->id, 'name' => 'To Do', 'position' => 1],
-                ['project_id' => $project->id, 'name' => 'In Progress', 'position' => 2],
-                ['project_id' => $project->id, 'name' => 'Done', 'position' => 3],
+                ['project_id' => $project->id, 'name' => 'To Do'],
+                ['project_id' => $project->id, 'name' => 'Sekretaris'],
+                ['project_id' => $project->id, 'name' => 'Bendahara'],
+                ['project_id' => $project->id, 'name' => 'Acara'],
+                ['project_id' => $project->id, 'name' => 'Humas'],
+                ['project_id' => $project->id, 'name' => 'PDD'],
+                ['project_id' => $project->id, 'name' => 'Perkap'],
             ]);
         }
     }
