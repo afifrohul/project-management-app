@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use App\Models\ProjectUserRole;
+use App\Models\Board;
 
 class ProjectController extends Controller
 {
@@ -61,7 +62,7 @@ class ProjectController extends Controller
     public function show($id)
     {
         try {
-            $project = $this->repository->find($id);
+            $project = $this->repository->find($id, ['boards']);
 
             $membersWithRoles = \App\Models\ProjectUserRole::with(['user', 'role'])
                 ->where('project_id', $project->id)
@@ -295,5 +296,67 @@ class ProjectController extends Controller
             return redirect()->route('invitations.index', $team->project_id ?? null)->with('error', 'Failed to reject member.');
         }
     }
+
+    public function storeBoard(Request $request, $projectId)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        try {
+            $project = $this->repository->find($projectId);
+            if (!$project) {
+                return redirect()->back()->with('error', 'Project not found.');
+            }
+
+            $board = new \App\Models\Board();
+            $board->name = $data['name'];
+            $board->project_id = $projectId;
+            $board->save();
+
+            return redirect()->route('projects.show', $projectId)->with('success', 'Board created successfully');
+        } catch (\Exception $e) {
+            Log::error("Error creating board for project $projectId: " . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to create board.');
+        }
+    }
+
+    public function updateBoard(Request $request, $projectId, $boardId)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        try {
+            $board = \App\Models\Board::where('project_id', $projectId)
+                ->findOrFail($boardId);
+
+            $board->name = $data['name'];
+            $board->save();
+
+            return redirect()->back()->with('success', 'Board updated successfully.');
+        } catch (\Exception $e) {
+            \Log::error("Error updating board $boardId in project $projectId: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update board.');
+        }
+    }
+
+
+    public function destroyBoard($id, $boardId)
+    {
+        try {
+            $board = Board::where('project_id', $id)->findOrFail($boardId);
+            $board->delete();
+
+            return redirect()->back()->with('success', 'Board deleted successfully.');
+        } catch (\Exception $e) {
+            \Log::error("Error deleting board $boardId from project $id: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete board.');
+        }
+    }
+
+
+
+
 
 }
