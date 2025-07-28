@@ -206,6 +206,20 @@ class ProjectController extends Controller
         }
     }
 
+    public function leaveProject($id)
+    {
+        try {
+            $team = \App\Models\ProjectUserRole::findOrFail($id);
+            $team->delete();
+
+            return redirect()->route('projects.index')->with('success', 'Successfully left the project!');
+        } catch (\Exception $e) {
+            Log::error("Error removing member $id: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to leave the project.');
+        }
+    }
+
+
     public function invitations(Request $request)
     {
         try {

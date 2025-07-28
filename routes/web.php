@@ -47,10 +47,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/projects/team/{id}', [ProjectController::class, 'addTeam'])->name('projects.add-team');
         Route::delete('/projects/team/{id}', [ProjectController::class, 'deleteTeam'])->name('projects.delete-team');
     });
-
     
     Route::middleware('project.role:Owner,Leader,Manager,Member')->group(function () {
-        Route::get('/projects/{id}/show', [ProjectController::class, 'show'])->name('projects.show');   
+        Route::get('/projects/{id}/show', [ProjectController::class, 'show'])->name('projects.show');
+        Route::delete('/projects/team/{id}/leave', [ProjectController::class, 'leaveProject'])->name('projects.leave');
     });
 
     Route::get('/invitations', [ProjectController::class, 'invitations'])->name('invitations.index');

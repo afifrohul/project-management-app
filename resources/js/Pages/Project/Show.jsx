@@ -21,6 +21,8 @@ export default function Show({ project, members, yourRole, roleNames }) {
     return groups;
   }, {});
 
+  console.log(yourRole.id);
+
   return (
     <AdminLayout siteHeader={<SiteHeader name={project.name} />}>
       <Head title={project.name} />
@@ -32,15 +34,41 @@ export default function Show({ project, members, yourRole, roleNames }) {
               <Badge className={'h-5'}>{yourRole?.role.name}</Badge>
             </div>
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => router.get(route('projects.team', project.id))}
-              >
-                Managa Team
-              </Button>
-              <EditButton routeName="projects.edit" id={project.id} />
-              <ConfirmButton routeName="projects.destroy" id={project.id} />
+              {/* Manage Team untuk Owner, Leader, Manager */}
+              {(yourRole?.role.name === 'Owner' ||
+                yourRole?.role.name === 'Leader' ||
+                yourRole?.role.name === 'Manager') && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => router.get(route('projects.team', project.id))}
+                >
+                  Manage Team
+                </Button>
+              )}
+
+              {(yourRole?.role.name === 'Owner' ||
+                yourRole?.role.name === 'Leader') && (
+                <>
+                  <EditButton routeName="projects.edit" id={project.id} />
+                </>
+              )}
+
+              {(yourRole?.role.name === 'Owner') && (
+                <>
+                  <ConfirmButton routeName="projects.destroy" id={project.id} />
+                </>
+              )}
+
+              {/* Leave Project untuk semua role kecuali Owner */}
+              {yourRole?.role.name !== 'Owner' && (
+                <ConfirmButton
+                  routeName="projects.leave"
+                  label="Leave Project"
+                  confirmMessage='Are you sure you want to leave this project?'
+                  id={yourRole?.id}
+                />
+              )}
             </div>
           </div>
           <Separator className="my-4" />
