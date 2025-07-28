@@ -35,14 +35,23 @@ Route::middleware('auth')->group(function () {
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
-    Route::get('/projects/{id}/show', [ProjectController::class, 'show'])->name('projects.show');
-    Route::get('/projects/{id}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
-    Route::put('/projects/{id}', [ProjectController::class, 'update'])->name('projects.update');
-    Route::delete('/projects/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+    Route::middleware('project.role:Owner,Leader')->group(function () {
+        Route::get('/projects/{id}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+        Route::put('/projects/{id}', [ProjectController::class, 'update'])->name('projects.update');
+        Route::delete('/projects/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+    });
+
+    Route::middleware('project.role:Owner,Leader,Manager')->group(function () {
+        Route::get('/projects/team/{id}', [ProjectController::class, 'team'])->name('projects.team');
+        Route::post('/projects/team/{id}', [ProjectController::class, 'addTeam'])->name('projects.add-team');
+        Route::delete('/projects/team/{id}', [ProjectController::class, 'deleteTeam'])->name('projects.delete-team');
+    });
+
     
-    Route::get('/projects/{id}/team', [ProjectController::class, 'team'])->name('projects.team');
-    Route::post('/projects', [ProjectController::class, 'addTeam'])->name('projects.add-team');
-    Route::delete('/projects/{id}', [ProjectController::class, 'deleteTeam'])->name('projects.delete-team');
+    Route::middleware('project.role:Owner,Leader,Manager,Member')->group(function () {
+        Route::get('/projects/{id}/show', [ProjectController::class, 'show'])->name('projects.show');   
+    });
 
     Route::get('/invitations', [ProjectController::class, 'invitations'])->name('invitations.index');
     Route::put('/invitations/{id}/accept', [ProjectController::class, 'acceptInvitation'])->name('invitations.accept');

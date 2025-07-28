@@ -35,7 +35,7 @@ export default function Team({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    router.post(route('projects.add-team'), form, {
+    router.post(route('projects.add-team', { id: project_id }), form, {
       onSuccess: () => {
         setForm((prev) => ({
           ...prev,

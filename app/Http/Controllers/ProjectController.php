@@ -65,13 +65,10 @@ class ProjectController extends Controller
 
             $membersWithRoles = \App\Models\ProjectUserRole::with(['user', 'role'])
                 ->where('project_id', $project->id)
+                ->where('status', '!=', 'pending')
                 ->get();
 
             $yourRole = \App\Models\ProjectUserRole::with('role')->where('user_id', auth()->id())->where('project_id', $id)->first();
-
-            if (!$project || $project->created_by !== auth()->id()) {
-                abort(403);
-            }
 
             return Inertia::render('Project/Show', [
                 'roleNames' => \App\Models\Role::pluck('name')->toArray(),
@@ -90,10 +87,6 @@ class ProjectController extends Controller
     {
         try {
             $project = $this->repository->find($id);
-
-            if (!$project || $project->created_by !== auth()->id()) {
-                abort(403);
-            }
 
             return Inertia::render('Project/Edit', [
                 'project' => $project,
@@ -115,10 +108,6 @@ class ProjectController extends Controller
 
             $project = $this->repository->find($id);
 
-            if (!$project || $project->created_by !== auth()->id()) {
-                abort(403);
-            }
-
             $this->repository->update($id, $data);
 
             return redirect()->route('projects.show', $id)->with('success', 'Project updated successfully');
@@ -133,10 +122,6 @@ class ProjectController extends Controller
     {
         try {
             $project = $this->repository->find($id);
-
-            if (!$project || $project->created_by !== auth()->id()) {
-                abort(403);
-            }
             
             $this->repository->delete($id);
 
