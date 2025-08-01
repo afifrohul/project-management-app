@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\ProjectUserRole;
 use App\Models\Board;
 use App\Models\Project;
+use App\Models\Task;
 
 class ProjectController extends Controller
 {
@@ -360,11 +361,12 @@ class ProjectController extends Controller
     {
         $project = Project::with('boards.tasks')->findOrFail($id);
 
-        // Ambil semua boards terkait project
-        $boards = $project->boards()->orderBy('created_at')->get();
+        $boards = Board::where('project_id', $id)->orderBy('created_at')->get();
 
-        // Ambil semua tasks terkait project + board_id-nya
-        $tasks = $project->tasks()->get();
+        $tasks = Task::where('project_id', $id)
+            ->with(['assignments'])
+            ->orderBy('created_at')
+            ->get();
 
         return Inertia::render('Project/Kanban', [
             'project' => [

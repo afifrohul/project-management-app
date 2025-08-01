@@ -19,21 +19,20 @@ class TaskSeeder extends Seeder
         $boards = Board::all();
 
         foreach ($boards as $board) {
-            // Buat antara 3-7 task per board
-            $taskCount = rand(3, 7);
+            $taskCount = rand(3, 5);
 
             for ($i = 0; $i < $taskCount; $i++) {
                 $task = Task::create([
                     'project_id'  => $board->project_id,
                     'board_id'    => $board->id,
-                    'title'       => $faker->sentence(3),
-                    'description' => $faker->paragraph(),
+                    'title'       => $faker->sentence(2),
+                    'description' => $faker->paragraph(1),
                     'priority'    => $faker->randomElement(['low', 'medium', 'high']),
                     'due_date'    => Carbon::now()->addDays(5),
                 ]);
 
                 // Optional: assign user_id acak (misal 3–5)
-                // $task->assignments()->attach(rand(3, 5));
+                $task->assignments()->attach(rand(3, 5));
             }
         }
     }
