@@ -11,7 +11,7 @@ export default function AvatarInitials({ name }) {
   }
 
   return (
-    <Avatar className="h-8 w-8 rounded-lg grayscale">
+    <Avatar className="h-8 w-8 rounded-lg grayscale text-xs">
       {/* <AvatarImage src={name} alt={name} /> */}
       <AvatarFallback className="rounded-lg">
         {getInitials(name)}

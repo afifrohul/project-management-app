@@ -17,19 +17,20 @@ class BoardSeeder extends Seeder
         $projects = Project::all();
 
         foreach ($projects as $project) {
-            Board::insert([
-                ['project_id' => $project->id, 'name' => 'Sekretaris'],
-                ['project_id' => $project->id, 'name' => 'Bendahara'],
-                ['project_id' => $project->id, 'name' => 'Acara'],
-                ['project_id' => $project->id, 'name' => 'Humas'],
-                ['project_id' => $project->id, 'name' => 'PDD'],
-                ['project_id' => $project->id, 'name' => 'Perkap'],
-            ]);
             // Board::insert([
-            //     ['project_id' => $project->id, 'name' => 'Planned'],
-            //     ['project_id' => $project->id, 'name' => 'In Progress'],
-            //     ['project_id' => $project->id, 'name' => 'Done'],
+            //     ['project_id' => $project->id, 'name' => 'Sekretaris'],
+            //     ['project_id' => $project->id, 'name' => 'Bendahara'],
+            //     ['project_id' => $project->id, 'name' => 'Acara'],
+            //     ['project_id' => $project->id, 'name' => 'Humas'],
+            //     ['project_id' => $project->id, 'name' => 'PDD'],
+            //     ['project_id' => $project->id, 'name' => 'Perkap'],
             // ]);
+            Board::insert([
+                ['project_id' => $project->id, 'name' => 'Planned'],
+                ['project_id' => $project->id, 'name' => 'In Progress'],
+                ['project_id' => $project->id, 'name' => 'Pending'],
+                ['project_id' => $project->id, 'name' => 'Done'],
+            ]);
         }
     }
 }

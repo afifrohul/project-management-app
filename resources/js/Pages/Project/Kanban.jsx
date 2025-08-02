@@ -263,7 +263,7 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
                       className="group"
                     >
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-start justify-between gap-2 flex-col">
                           <div className="flex justify-between items-center w-full gap-4">
                             <p className="m-0 flex-1 font-medium text-sm">
                               {feature.title}
@@ -302,6 +302,42 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
                                 />
                               </div>
                             ) : null}
+                          </div>
+                          {/* <div>
+                            <p className="text-muted-foreground italic text-xs ">
+                              {feature.description
+                                ? feature.description
+                                : 'No description available'}
+                            </p>
+                          </div> */}
+                          {/* <div>
+                            <p className="italic text-xs">
+                              Due Date: {feature.due_date}
+                            </p>
+                          </div> */}
+                          {/* <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-1 border rounded w-fit py-1 px-2 mt-1 text-xs">
+                              <span
+                                className={`h-2 w-2 rounded-full ${
+                                  feature.priority === 'high'
+                                    ? 'bg-red-500'
+                                    : feature.priority === 'medium'
+                                      ? 'bg-yellow-500'
+                                      : 'bg-green-500'
+                                }`}
+                              ></span>
+                              {feature.priority.charAt(0).toUpperCase() +
+                                feature.priority.slice(1)}
+                              <span>Priority </span>
+                            </div>
+                          </div> */}
+                          <div>
+                            {feature.assigmnent.map((assignment) => (
+                              <AvatarInitials
+                                name={assignment.name}
+                                key={assignment.id}
+                              />
+                            ))}
                           </div>
                         </div>
                       </div>
