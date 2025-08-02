@@ -69,7 +69,7 @@ export const KanbanCard = ({ id, name, children, className }) => {
       <div style={style} {...listeners} {...attributes} ref={setNodeRef}>
         <Card
           className={cn(
-            'cursor-grab gap-4 rounded-md p-3 shadow-sm',
+            'gap-4 rounded-md p-3 shadow-sm',
             isDragging && 'pointer-events-none cursor-grabbing opacity-30',
             className
           )}
@@ -81,7 +81,7 @@ export const KanbanCard = ({ id, name, children, className }) => {
         <t.In>
           <Card
             className={cn(
-              'cursor-grab gap-4 rounded-md p-3 shadow-sm ring-2 ring-primary',
+              'gap-4 rounded-md p-3 shadow-sm ring-2 ring-primary',
               isDragging && 'cursor-grabbing',
               className
             )}
@@ -127,14 +127,21 @@ export const KanbanProvider = ({
   columns,
   data,
   onDataChange,
+  isModalOpen = false,
   ...props
 }) => {
   const [activeCardId, setActiveCardId] = useState(null);
 
   const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(TouchSensor),
-    useSensor(KeyboardSensor)
+    useSensor(MouseSensor, {
+      activationConstraint: { distance: 5 },
+      disabled: isModalOpen,
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 250, tolerance: 5 },
+      disabled: isModalOpen,
+    }),
+    useSensor(KeyboardSensor, { disabled: isModalOpen })
   );
 
   const handleDragStart = (event) => {

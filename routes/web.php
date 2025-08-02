@@ -50,6 +50,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/projects/{id}/boards', [ProjectController::class, 'storeBoard'])->name('projects.store-board');
         Route::put('/projects/{id}/boards/{board}', [ProjectController::class, 'updateBoard'])->name('projects.update-board');
         Route::delete('/projects/{id}/boards/{board}', [ProjectController::class, 'destroyBoard'])->name('projects.delete-board');
+
+        Route::post('/projects/{id}/tasks', [ProjectController::class, 'storeTask'])->name('projects.store-task');
+        Route::put('/projects/{id}/tasks/{task}', [ProjectController::class, 'updateTask'])->name('projects.update-task');
+        Route::delete('/projects/{id}/tasks/{task}', [ProjectController::class, 'destroyTask'])->name('projects.delete-task');
     });
     
     Route::middleware('project.role:Owner,Leader,Manager,Member')->group(function () {

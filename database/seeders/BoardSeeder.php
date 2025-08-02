@@ -25,6 +25,11 @@ class BoardSeeder extends Seeder
                 ['project_id' => $project->id, 'name' => 'PDD'],
                 ['project_id' => $project->id, 'name' => 'Perkap'],
             ]);
+            // Board::insert([
+            //     ['project_id' => $project->id, 'name' => 'Planned'],
+            //     ['project_id' => $project->id, 'name' => 'In Progress'],
+            //     ['project_id' => $project->id, 'name' => 'Done'],
+            // ]);
         }
     }
 }

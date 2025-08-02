@@ -19,6 +19,7 @@ export default function ConfirmButton({
   label = 'Delete',
   method = 'delete',
   variant = 'default',
+  size = 'sm',
   data = {},
   onSuccess,
   onError,
@@ -55,7 +56,7 @@ export default function ConfirmButton({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button size="sm" variant={variant} {...props}>
+        <Button size={size} variant={variant} {...props}>
           {label}
         </Button>
       </AlertDialogTrigger>

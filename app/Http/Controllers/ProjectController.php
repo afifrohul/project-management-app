@@ -316,7 +316,7 @@ class ProjectController extends Controller
             $board->project_id = $projectId;
             $board->save();
 
-            return redirect()->route('projects.show', $projectId)->with('success', 'Board created successfully');
+            return redirect()->back()->with('success', 'Board created successfully');
         } catch (\Exception $e) {
             Log::error("Error creating board for project $projectId: " . $e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Failed to create board.');
@@ -361,6 +361,8 @@ class ProjectController extends Controller
     {
         $project = Project::with('boards.tasks')->findOrFail($id);
 
+        $yourRole = \App\Models\ProjectUserRole::with('role')->where('user_id', auth()->id())->where('project_id', $id)->first();
+
         $boards = Board::where('project_id', $id)->orderBy('created_at')->get();
 
         $tasks = Task::where('project_id', $id)
@@ -375,9 +377,74 @@ class ProjectController extends Controller
             ],
             'boards' => $boards,
             'tasks' => $tasks,
+            'yourRole' => $yourRole,
         ]);
     }
 
+
+    public function storeTask(Request $request, $projectId)
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'board_id' => 'required|exists:boards,id',
+        ]);
+
+        try {
+            $project = $this->repository->find($projectId);
+            if (!$project) {
+                return redirect()->back()->with('error', 'Project not found.');
+            }
+
+            $task = new \App\Models\Task();
+            $task->title = $data['title'];
+            $task->description = $data['description'];
+            $task->board_id = $data['board_id'];
+            $task->project_id = $projectId;
+            $task->save();
+
+            return redirect()->back()->with('success', 'Task created successfully');
+        } catch (\Exception $e) {
+            Log::error("Error creating task for project $projectId: " . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to create task.');
+        }
+    }
+
+    public function updateTask(Request $request, $projectId, $taskId)
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+        ]);
+
+        try {
+            $task = \App\Models\Task::where('project_id', $projectId)
+                ->findOrFail($taskId);
+
+            $task->title = $data['title'];
+            $task->description = $data['description'];
+            $task->save();
+
+            return redirect()->back()->with('success', 'Board updated successfully.');
+        } catch (\Exception $e) {
+            \Log::error("Error updating board $$taskId in project $projectId: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update board.');
+        }
+    }
+
+
+    public function destroyTask($id, $taskId)
+    {
+        try {
+            $task = Task::where('project_id', $id)->findOrFail($taskId);
+            $task->delete();
+
+            return redirect()->back()->with('success', 'Task deleted successfully.');
+        } catch (\Exception $e) {
+            \Log::error("Error deleting task $taskId from project $id: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete task.');
+        }
+    }
 
 
 
