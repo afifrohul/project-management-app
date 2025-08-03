@@ -131,7 +131,7 @@ export default function Index({ tasks }) {
                       Here is the detail of the task.
                     </DialogDescription>
                     <Separator />
-                    <div className="flex flex-col gap-3 text-muted-foreground">
+                    <div className="flex flex-col gap-3">
                       <div>
                         <div className="font-semibold">Title</div>
                         <div className="text-sm">{task.title}</div>

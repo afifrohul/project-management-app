@@ -133,15 +133,15 @@ export const KanbanProvider = ({
   const [activeCardId, setActiveCardId] = useState(null);
 
   const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: { distance: 5 },
-      disabled: isModalOpen,
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: { delay: 250, tolerance: 5 },
-      disabled: isModalOpen,
-    }),
-    useSensor(KeyboardSensor, { disabled: isModalOpen })
+    // useSensor(MouseSensor, {
+    //   activationConstraint: { distance: 5 },
+    //   disabled: isModalOpen,
+    // }),
+    // useSensor(TouchSensor, {
+    //   activationConstraint: { delay: 250, tolerance: 5 },
+    //   disabled: isModalOpen,
+    // }),
+    // useSensor(KeyboardSensor, { disabled: isModalOpen })
   );
 
   const handleDragStart = (event) => {

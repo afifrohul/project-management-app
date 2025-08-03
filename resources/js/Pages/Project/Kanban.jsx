@@ -25,10 +25,30 @@ import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import AvatarInitials from '@/Components/AvatarInitials';
 import { Button } from '@/Components/ui/button';
-import { FaPlusCircle } from 'react-icons/fa';
+import { FaCircle, FaPlusCircle } from 'react-icons/fa';
 import ConfirmButton from '@/Components/ConfirmButton';
-import { PencilIcon, PlusIcon, TrashIcon } from 'lucide-react';
+import {
+  CalendarIcon,
+  EyeIcon,
+  PencilIcon,
+  PlusIcon,
+  TrashIcon,
+} from 'lucide-react';
 import { useEffect } from 'react';
+import { Textarea } from '@/Components/ui/textarea';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/Components/ui/popover';
+import { Calendar } from '@/Components/ui/calendar';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/Components/ui/select';
 
 const getColumns = (boards) => {
   return boards.map((board) => ({
@@ -66,8 +86,15 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
   const [form, setForm] = useState({
     title: '',
     description: '',
-    board_id: '',
+    priority: 'low',
+    due_date: null,
+    board_id: null,
   });
+
+  const [openDetailModal, setOpenDetailModal] = useState(false);
+
+  console.log(editingTask);
+  console.log(columns);
 
   return (
     <AdminLayout
@@ -122,6 +149,7 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
                           name="name"
                           value={creatingBoardName}
                           onChange={(e) => setCreatingBoardName(e.target.value)}
+                          placeholder="Enter board name"
                         />
                       </div>
                     </div>
@@ -262,75 +290,81 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
                       name={feature.name}
                       className="group"
                     >
-                      <div className="flex flex-col gap-1">
+                      <div
+                        className={`flex flex-col gap-1 border-r-2 pr-1 ${
+                          feature.priority === 'high'
+                            ? 'border-red-500'
+                            : feature.priority === 'medium'
+                              ? 'border-yellow-500'
+                              : 'border-green-500'
+                        }`}
+                      >
                         <div className="flex items-start justify-between gap-2 flex-col">
                           <div className="flex justify-between items-center w-full gap-4">
-                            <p className="m-0 flex-1 font-medium text-sm">
+                            <p className="m-0 flex-1 font-medium text-base">
                               {feature.title}
                             </p>
-                            {yourRole?.role.name === 'Owner' ||
+                            {/* {yourRole?.role.name === 'Owner' ||
                             yourRole?.role.name === 'Leader' ||
-                            yourRole?.role.name === 'Manager' ? (
-                              <div className="hidden group-hover:flex items-center justify-between">
-                                <Button
-                                  variant="ghost"
-                                  size="tiny_icon"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setEditingTask(feature);
-                                    setForm({
-                                      title: feature.title,
-                                      description: feature.description,
-                                      board_id: column.id,
-                                    });
-                                    setOpenTaskModal(true);
-                                  }}
-                                  onMouseDown={(e) => e.stopPropagation()}
-                                >
-                                  <PencilIcon />
-                                </Button>
-                                <ConfirmButton
-                                  size="tiny_icon"
-                                  variant="ghost"
-                                  label={<TrashIcon />}
-                                  confirmMessage="Are you sure to delete this task?"
-                                  routeName="projects.delete-task"
-                                  id={{ id: project.id, task: feature.id }}
-                                  method="delete"
-                                  onClick={(e) => e.stopPropagation()}
-                                  onMouseDown={(e) => e.stopPropagation()}
-                                />
-                              </div>
-                            ) : null}
+                            yourRole?.role.name === 'Manager' ? ( */}
+                            <div className="hidden group-hover:flex items-center justify-between">
+                              <Button
+                                variant="ghost"
+                                size="tiny_icon"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingTask(feature);
+                                  setForm({
+                                    title: feature.title,
+                                    description: feature.description,
+                                    priority: feature.priority,
+                                    due_date: feature.due_date,
+                                    board_id: column.id,
+                                  });
+                                  setOpenDetailModal(true);
+                                }}
+                                onMouseDown={(e) => e.stopPropagation()}
+                              >
+                                <EyeIcon />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="tiny_icon"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingTask(feature);
+                                  setForm({
+                                    title: feature.title,
+                                    description: feature.description,
+                                    priority: feature.priority,
+                                    due_date: feature.due_date,
+                                    board_id: column.id,
+                                  });
+                                  setOpenTaskModal(true);
+                                }}
+                                onMouseDown={(e) => e.stopPropagation()}
+                              >
+                                <PencilIcon />
+                              </Button>
+                              <ConfirmButton
+                                size="tiny_icon"
+                                variant="ghost"
+                                label={<TrashIcon />}
+                                confirmMessage="Are you sure to delete this task?"
+                                routeName="projects.delete-task"
+                                id={{ id: project.id, task: feature.id }}
+                                method="delete"
+                                onClick={(e) => e.stopPropagation()}
+                                onMouseDown={(e) => e.stopPropagation()}
+                              />
+                            </div>
+                            {/* ) : null} */}
                           </div>
-                          {/* <div>
-                            <p className="text-muted-foreground italic text-xs ">
-                              {feature.description
-                                ? feature.description
-                                : 'No description available'}
-                            </p>
-                          </div> */}
-                          {/* <div>
+                          <div>
                             <p className="italic text-xs">
                               Due Date: {feature.due_date}
                             </p>
-                          </div> */}
-                          {/* <div className="flex justify-between items-center">
-                            <div className="flex items-center gap-1 border rounded w-fit py-1 px-2 mt-1 text-xs">
-                              <span
-                                className={`h-2 w-2 rounded-full ${
-                                  feature.priority === 'high'
-                                    ? 'bg-red-500'
-                                    : feature.priority === 'medium'
-                                      ? 'bg-yellow-500'
-                                      : 'bg-green-500'
-                                }`}
-                              ></span>
-                              {feature.priority.charAt(0).toUpperCase() +
-                                feature.priority.slice(1)}
-                              <span>Priority </span>
-                            </div>
-                          </div> */}
+                          </div>
                           <div>
                             {feature.assigmnent.map((assignment) => (
                               <AvatarInitials
@@ -347,8 +381,66 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
               </KanbanBoard>
             )}
           </KanbanProvider>
+          <Dialog open={openDetailModal} onOpenChange={setOpenDetailModal}>
+            <DialogContent className="sm:max-w-[425px] w-2/3">
+              <DialogHeader>
+                <DialogTitle>Detail Task</DialogTitle>
+                <DialogDescription>
+                  Here is the detail of the task.
+                </DialogDescription>
+                <Separator />
+                <div className="flex flex-col gap-3 ">
+                  <div>
+                    <div className="font-semibold">Title</div>
+                    <div className="text-sm">{form.title}</div>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Description</div>
+                    <div className="text-sm">{form.description}</div>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Priority</div>
+                    <div className="flex gap-1 items-center text-xs">
+                      {form.priority === 'high' ? (
+                        <FaCircle className="h-2 text-red-500" />
+                      ) : form.priority === 'medium' ? (
+                        <FaCircle className="h-2 text-yellow-500" />
+                      ) : (
+                        <FaCircle className="h-2 text-green-500" />
+                      )}
+                      {form.priority?.charAt(0).toUpperCase() +
+                        form.priority?.slice(1)}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Due Date</div>
+                    <div className="text-sm">
+                      {form.due_date
+                        ? format(form.due_date, 'dd MMMM yyyy')
+                        : '-'}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Board</div>
+                    <div className="text-sm">
+                      {form.board_id
+                        ? (boards.find((b) => b.id === form.board_id)?.name ??
+                          '-')
+                        : '-'}
+                    </div>
+                  </div>
+                </div>
+              </DialogHeader>
+              <Separator />
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline">Close</Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Dialog open={openTaskModal} onOpenChange={setOpenTaskModal}>
-            <DialogContent className="sm:max-w-[424px]">
+            <DialogContent className="sm:max-w-[425px]">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -361,13 +453,22 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
                       })
                     : route('projects.store-task', project.id);
 
-                  router[method](url, form, {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                      setOpenTaskModal(false);
-                      setEditingTask(null);
+                  router[method](
+                    url,
+                    {
+                      ...form,
+                      due_date: form.due_date
+                        ? format(form.due_date, 'yyyy-MM-dd')
+                        : null,
                     },
-                  });
+                    {
+                      preserveScroll: true,
+                      onSuccess: () => {
+                        setOpenTaskModal(false);
+                        setEditingTask(null);
+                      },
+                    }
+                  );
                 }}
               >
                 <DialogHeader>
@@ -389,18 +490,103 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
                       onChange={(e) =>
                         setForm({ ...form, title: e.target.value })
                       }
+                      placeholder="Enter task title"
                     />
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="description">Description</Label>
-                    <Input
-                      id="description"
+                    <Textarea
                       value={form.description}
                       onChange={(e) =>
                         setForm({ ...form, description: e.target.value })
                       }
+                      placeholder="Enter task description"
+                      rows={4}
                     />
                   </div>
+                  <div>
+                    <Label htmlFor="priority">Priority</Label>
+                    <Select
+                      value={form.priority}
+                      onValueChange={(value) =>
+                        setForm({ ...form, priority: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select priority" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">
+                          <div className="flex items-center gap-1">
+                            <div className="h-2 w-2 rounded-full bg-green-500"></div>{' '}
+                            <p>Low</p>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="medium">
+                          <div className="flex items-center gap-1">
+                            <div className="h-2 w-2 rounded-full bg-yellow-500"></div>{' '}
+                            <p>Medium</p>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="high">
+                          <div className="flex items-center gap-1">
+                            <div className="h-2 w-2 rounded-full bg-red-500"></div>{' '}
+                            <p>High</p>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="due_date">Due Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal"
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {form.due_date ? (
+                            format(form.due_date, 'PPP')
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={form.due_date}
+                          onSelect={(date) =>
+                            setForm({ ...form, due_date: date })
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  {editingTask ? (
+                    <div>
+                      <Label htmlFor="board">Board</Label>
+                      <Select
+                        value={form.board_id}
+                        onValueChange={(value) =>
+                          setForm({ ...form, board_id: Number(value) })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select board" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {columns.map((column) => (
+                            <SelectItem key={column.id} value={column.id}>
+                              {column.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  ) : null}
                 </div>
                 <DialogFooter>
                   <DialogClose asChild>

@@ -22,6 +22,9 @@ export default function Show({ project, members, yourRole, roleNames }) {
     return groups;
   }, {});
 
+  console.log(members);
+  console.log(groupedMembers);
+
   return (
     <AdminLayout siteHeader={<SiteHeader name={project.name} />}>
       <Head title={project.name} />

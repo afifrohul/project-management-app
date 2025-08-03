@@ -387,6 +387,8 @@ class ProjectController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
+            'priority' => 'required|in:low,medium,high',
+            'due_date' => 'nullable|date',
             'board_id' => 'required|exists:boards,id',
         ]);
 
@@ -399,6 +401,8 @@ class ProjectController extends Controller
             $task = new \App\Models\Task();
             $task->title = $data['title'];
             $task->description = $data['description'];
+            $task->priority = $data['priority'];
+            $task->due_date = $data['due_date'];
             $task->board_id = $data['board_id'];
             $task->project_id = $projectId;
             $task->save();
@@ -415,6 +419,9 @@ class ProjectController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
+            'priority' => 'required|in:low,medium,high',
+            'due_date' => 'nullable|date',
+            'board_id' => 'required|exists:boards,id',
         ]);
 
         try {
@@ -423,12 +430,15 @@ class ProjectController extends Controller
 
             $task->title = $data['title'];
             $task->description = $data['description'];
+            $task->priority = $data['priority'];
+            $task->due_date = $data['due_date'];
+            $task->board_id = $data['board_id'];
             $task->save();
 
-            return redirect()->back()->with('success', 'Board updated successfully.');
+            return redirect()->back()->with('success', 'Task updated successfully.');
         } catch (\Exception $e) {
-            \Log::error("Error updating board $$taskId in project $projectId: " . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to update board.');
+            \Log::error("Error updating task $taskId in project $projectId: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update task.');
         }
     }
 

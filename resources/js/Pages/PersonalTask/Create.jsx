@@ -13,7 +13,11 @@ import {
 import AdminLayout from '@/Layouts/AdminLayout';
 import { SiteHeader } from '@/Components/site-header';
 import { CalendarIcon } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 
@@ -43,7 +47,10 @@ export default function Create() {
     <AdminLayout siteHeader={<SiteHeader name="Create Personal Task" />}>
       <Head title="Create Personal Task" />
       <div className="container max-w-xl">
-        <form onSubmit={handleSubmit} className="space-y-4 border p-6 rounded-lg">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 border p-6 rounded-lg"
+        >
           <div>
             <label className="block mb-1 text-sm font-medium">Title</label>
             <Input
@@ -55,7 +62,9 @@ export default function Create() {
           </div>
 
           <div>
-            <label className="block mb-1 text-sm font-medium">Description</label>
+            <label className="block mb-1 text-sm font-medium">
+              Description
+            </label>
             <Textarea
               value={form.description}
               onChange={(e) => handleChange('description', e.target.value)}
@@ -74,9 +83,24 @@ export default function Create() {
                 <SelectValue placeholder="Select priority" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="high">High</SelectItem>
+                <SelectItem value="low">
+                  <div className="flex items-center gap-1">
+                    <div className="h-2 w-2 rounded-full bg-green-500"></div>{' '}
+                    <p>Low</p>
+                  </div>
+                </SelectItem>
+                <SelectItem value="medium">
+                  <div className="flex items-center gap-1">
+                    <div className="h-2 w-2 rounded-full bg-yellow-500"></div>{' '}
+                    <p>Medium</p>
+                  </div>
+                </SelectItem>
+                <SelectItem value="high">
+                  <div className="flex items-center gap-1">
+                    <div className="h-2 w-2 rounded-full bg-red-500"></div>{' '}
+                    <p>High</p>
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -107,7 +131,11 @@ export default function Create() {
                   className="w-full justify-start text-left font-normal"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {form.due_date ? format(form.due_date, 'PPP') : <span>Pick a date</span>}
+                  {form.due_date ? (
+                    format(form.due_date, 'PPP')
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
