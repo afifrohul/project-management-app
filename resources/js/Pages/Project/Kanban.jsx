@@ -50,6 +50,8 @@ import {
   SelectValue,
 } from '@/Components/ui/select';
 
+import AssignmentSelect from '@/Components/AssignmentSelect';
+
 const getColumns = (boards) => {
   return boards.map((board) => ({
     id: board.id,
@@ -64,15 +66,21 @@ const getFeatures = (tasks) => {
     description: task.description,
     due_date: format(new Date(task.due_date), 'MMM dd, yyyy'),
     priority: task.priority,
-    assigmnent: task.assignments.map((assignment) => ({
-      id: assignment.id,
-      name: assignment.name,
+    assignment: task.assignments.map((a) => ({
+      id: a.id,
+      name: a.name,
     })),
     column: task.board_id,
   }));
 };
 
-export default function BoardPage({ project, boards, tasks, yourRole }) {
+export default function BoardPage({
+  project,
+  boards,
+  tasks,
+  yourRole,
+  members,
+}) {
   const columns = getColumns(boards);
   const features = getFeatures(tasks);
 
@@ -88,13 +96,11 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
     description: '',
     priority: 'low',
     due_date: null,
+    assignments: [],
     board_id: null,
   });
 
   const [openDetailModal, setOpenDetailModal] = useState(false);
-
-  console.log(editingTask);
-  console.log(columns);
 
   return (
     <AdminLayout
@@ -319,6 +325,12 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
                                     description: feature.description,
                                     priority: feature.priority,
                                     due_date: feature.due_date,
+                                    assignments: feature.assignment.map(
+                                      (a) => ({
+                                        id: a.id,
+                                        name: a.name,
+                                      })
+                                    ),
                                     board_id: column.id,
                                   });
                                   setOpenDetailModal(true);
@@ -338,6 +350,9 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
                                     description: feature.description,
                                     priority: feature.priority,
                                     due_date: feature.due_date,
+                                    assignments: feature.assignment.map(
+                                      (a) => a.id
+                                    ),
                                     board_id: column.id,
                                   });
                                   setOpenTaskModal(true);
@@ -365,12 +380,9 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
                               Due Date: {feature.due_date}
                             </p>
                           </div>
-                          <div>
-                            {feature.assigmnent.map((assignment) => (
-                              <AvatarInitials
-                                name={assignment.name}
-                                key={assignment.id}
-                              />
+                          <div className="flex gap-1">
+                            {feature.assignment.map((a) => (
+                              <AvatarInitials name={a.name} key={a.id} />
                             ))}
                           </div>
                         </div>
@@ -427,6 +439,20 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
                         ? (boards.find((b) => b.id === form.board_id)?.name ??
                           '-')
                         : '-'}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Assignments</div>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      {form.assignments?.map((a) => (
+                        <div
+                          key={a.id}
+                          className="flex items-center gap-2 border w-fit rounded-lg pr-2"
+                        >
+                          <AvatarInitials name={a.name} />
+                          <p className="font-medium text-xs">{a.name}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -564,6 +590,16 @@ export default function BoardPage({ project, boards, tasks, yourRole }) {
                         />
                       </PopoverContent>
                     </Popover>
+                  </div>
+                  <div>
+                    <Label htmlFor="assignment">Assignment</Label>
+                    <AssignmentSelect
+                      users={members}
+                      selected={form.assignments}
+                      onChange={(value) =>
+                        setForm({ ...form, assignments: value })
+                      }
+                    />
                   </div>
                   {editingTask ? (
                     <div>

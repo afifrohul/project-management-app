@@ -370,6 +370,11 @@ class ProjectController extends Controller
             ->orderBy('created_at')
             ->get();
 
+        $membersWithRoles = \App\Models\ProjectUserRole::with(['user', 'role'])
+            ->where('project_id', $project->id)
+            ->where('status', '!=', 'pending')
+            ->get();
+
         return Inertia::render('Project/Kanban', [
             'project' => [
                 'id' => $project->id,
@@ -378,6 +383,14 @@ class ProjectController extends Controller
             'boards' => $boards,
             'tasks' => $tasks,
             'yourRole' => $yourRole,
+            'members' => $membersWithRoles->map(function ($member) {
+                return [
+                    'id' => $member->user->id,
+                    'name' => $member->user->name,
+                    'email' => $member->user->email,
+                    'role' => $member->role->name,
+                ];
+            }),
         ]);
     }
 
@@ -390,14 +403,15 @@ class ProjectController extends Controller
             'priority' => 'required|in:low,medium,high',
             'due_date' => 'nullable|date',
             'board_id' => 'required|exists:boards,id',
+            'assignments' => 'array',
         ]);
-
+        
         try {
             $project = $this->repository->find($projectId);
             if (!$project) {
                 return redirect()->back()->with('error', 'Project not found.');
             }
-
+            
             $task = new \App\Models\Task();
             $task->title = $data['title'];
             $task->description = $data['description'];
@@ -407,13 +421,17 @@ class ProjectController extends Controller
             $task->project_id = $projectId;
             $task->save();
 
+            if (!empty($data['assignments'])) {
+                $task->assignments()->sync($data['assignments']);
+            }
+            
             return redirect()->back()->with('success', 'Task created successfully');
         } catch (\Exception $e) {
             Log::error("Error creating task for project $projectId: " . $e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Failed to create task.');
         }
     }
-
+    
     public function updateTask(Request $request, $projectId, $taskId)
     {
         $data = $request->validate([
@@ -422,6 +440,7 @@ class ProjectController extends Controller
             'priority' => 'required|in:low,medium,high',
             'due_date' => 'nullable|date',
             'board_id' => 'required|exists:boards,id',
+            'assignments' => 'array',
         ]);
 
         try {
@@ -434,6 +453,10 @@ class ProjectController extends Controller
             $task->due_date = $data['due_date'];
             $task->board_id = $data['board_id'];
             $task->save();
+
+            if (isset($data['assignments'])) {
+                $task->assignments()->sync($data['assignments']);
+            }
 
             return redirect()->back()->with('success', 'Task updated successfully.');
         } catch (\Exception $e) {
